@@ -1,0 +1,23 @@
+@(fileContent: List[uk.co.jerrin.search.idx.FileEntry])
+
+@main("Filter records") {
+
+
+<table style="width:600px" class="results">
+
+	<tr style="width:600px">
+		<th style="width:100px">Name</th>
+		<th style="width:200px">Email</th>
+		<th style="width:100px">Subject</th>
+	</tr>
+
+    @for(fileEntry <- fileContent){
+    
+    	<tr style="width:600px">    	
+        	<td style="width:100px">@fileEntry.name</td>
+    		<td style="width:200px">@fileEntry.email</td>
+        	<td style="width:100px">@fileEntry.subject</td>
+        </tr>
+    }
+</table>    
+}
