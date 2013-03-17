@@ -4,6 +4,10 @@ package uk.co.jerrin.search.app;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.camel.component.file.GenericFile;
+import org.apache.camel.component.file.GenericFileFilter;
+import org.apache.camel.impl.SimpleRegistry;
+
 import play.Application;
 import play.Configuration;
 import play.GlobalSettings;
@@ -55,6 +59,7 @@ public class Global extends GlobalSettings {
 		IndexService.cleanIndex();
 		FileEntry emptyFile = new FileEntry();
 		emptyFile.index();
+
 		
 		UntypedActorFactory factory = new UntypedActorFactory() {
 			public Actor create() {
@@ -65,6 +70,10 @@ public class Global extends GlobalSettings {
 		ActorSystem system = ActorSystem.create("file-search");
 		ActorRef producer = system.actorOf(new Props(factory), "filesearch");
 		Camel camel = CamelExtension.get(system);
+		
+		SimpleRegistry simpleRegistry = new SimpleRegistry();
+		simpleRegistry.put("logFileFilter", new LogFileFilter<File>());
+		camel.context().setRegistry(simpleRegistry);
 
 		Timeout timeout = new Timeout(Duration.create(30, TimeUnit.SECONDS));
 		Future<ActorRef> activationFuture = camel.activationFutureFor(producer,
@@ -84,4 +93,11 @@ public class Global extends GlobalSettings {
 		return injector.getInstance(clazz);
 	}
 
+	
+	private class LogFileFilter<T> implements GenericFileFilter<T> {
+
+	    public boolean accept(GenericFile<T> file) {
+	        return file.getFileName().startsWith("file.csv");
+	    }
+	}
 }

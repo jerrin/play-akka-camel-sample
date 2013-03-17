@@ -28,7 +28,7 @@ public class LogFileConsumer extends UntypedConsumerActor implements LogConsumer
     	//return "file://resources/idx/files";
     	long delay = 3 * 60 * 60 * 1000; // 3 hours
     	long initDelay = 1 * 1000; // 1 seconds
-    	return String.format("ftp://admin@localhost:21/?username=admin&password=admin&readLock=changed&consumer.initialDelay=%s&consumer.delay=%s", initDelay, delay);
+    	return String.format("ftp://admin@localhost:21/?username=admin&password=admin&readLock=changed&consumer.initialDelay=%s&consumer.delay=%s&filter=#logFileFilter", initDelay, delay);
     }
 
     public void onReceive(Object message) {
